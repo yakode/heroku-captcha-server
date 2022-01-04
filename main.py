@@ -10,7 +10,7 @@ import json
 
 from flask_cors import CORS
 app = Flask(__name__)
-cors = CORS(app, resources={r"https://oauth.ccxp.nthu.edu.tw//*": {"origins": "*"}})
+cors = CORS(app, resources={r"https://oauth.ccxp.nthu.edu.tw/*": {"origins": "*"}})
 
 @app.route("/test", methods=['GET'])
 def test():
