@@ -1,4 +1,4 @@
-pytorch
+tflite
 Flask
 gunicorn
 flask_cors
