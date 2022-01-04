@@ -10,7 +10,7 @@ from flask import request, Flask,jsonify
 
 from flask_socketio import SocketIO
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins='*')
+cors = CORS(app, resources={r"https://oauth.ccxp.nthu.edu.tw//*": {"origins": "*"}})
 
 @app.route("/test", methods=['GET'])
 def test():
