@@ -8,8 +8,9 @@ from flask import request, Flask,jsonify
 # from io import BytesIO
 # from base64 import b64decode
 
+from flask_socketio import SocketIO
 app = Flask(__name__)
-
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 @app.route("/test", methods=['GET'])
 def test():
