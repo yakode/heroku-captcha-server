@@ -15,4 +15,4 @@ CORS(app)
 @app.route("/test", methods=['GET'])
 def test():
     res = json.loads(request.data.decode('utf-8'))
-    return jsonify({'test': res})
+    return res
