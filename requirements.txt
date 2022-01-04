@@ -3,8 +3,6 @@ gunicorn
 flask_cors
 tensorflow
 numpy
-sys
-os
 PIL
 requests
 io

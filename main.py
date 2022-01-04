@@ -4,8 +4,6 @@ import tensorflow as tf
 import tensorflow.keras.layers as layers
 import tensorflow.keras as keras
 import numpy as np
-import sys
-import os
 from PIL import Image
 import requests
 from io import BytesIO
