@@ -1,4 +1,4 @@
-torch
+pytorch
 Flask
 gunicorn
 flask_cors
