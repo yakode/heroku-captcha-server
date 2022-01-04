@@ -1,4 +1,7 @@
 Flask
 gunicorn
 flask_cors
-tensorflow
+
+numpy
+Pillow
+requests
