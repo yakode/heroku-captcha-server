@@ -15,4 +15,6 @@ CORS(app)
 @app.route("/test", methods=['POST'])
 def test():
     res = json.loads(request.data.decode('utf-8'))
+    res["result"] = res["url"]
+    res["url"] = "hehe"
     return res
