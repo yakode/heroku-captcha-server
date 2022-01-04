@@ -1,5 +1,3 @@
-from flask import request, Flask,jsonify
-import json
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 import tensorflow.keras as keras
@@ -7,6 +5,9 @@ import numpy as np
 from Pillow import Image
 import requests
 from io import BytesIO
+
+from flask import request, Flask,jsonify
+import json
 from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)

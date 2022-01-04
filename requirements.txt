@@ -1,8 +1,7 @@
-tflite
 Flask
 gunicorn
 flask_cors
-tensorflow
+tflite
 numpy
 Pillow
 requests
