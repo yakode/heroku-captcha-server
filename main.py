@@ -4,11 +4,11 @@ from flask import request, Flask,jsonify
 # import torchvision.transforms as transforms
 # from torch.autograd import Variable
 # from pytorch_model import CNN
-# import json
+import json
 # from io import BytesIO
 # from base64 import b64decode
 
-from flask_socketio import SocketIO
+from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app, resources={r"https://oauth.ccxp.nthu.edu.tw//*": {"origins": "*"}})
 
