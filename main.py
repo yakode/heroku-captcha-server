@@ -4,7 +4,7 @@ import tensorflow as tf
 import tensorflow.keras.layers as layers
 import tensorflow.keras as keras
 import numpy as np
-from PIL import Image
+from Pillow import Image
 import requests
 from io import BytesIO
 from flask_cors import CORS
