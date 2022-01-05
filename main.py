@@ -52,9 +52,9 @@ def load_image(url, PHPSESSID):
     np_img = np.expand_dims(np_img, axis=0)
     return np_img
 
-def main(argv):
+def main(_url, _cookie):
     model = tflite.Model('./model.tflite')    
-    img = load_image(argv[1], argv[2])
+    img = load_image(_url, _cookie)
     preds = model.predict(img)
     pred_texts = decode(preds)
     return pred_texts
