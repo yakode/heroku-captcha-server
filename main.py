@@ -57,7 +57,7 @@ def load_image(url, PHPSESSID):
 
 def main(_url, _cookie):
     prediction_model = tf.keras.models.load_model('./prediction_model.h5', compile=False)
-    img = load_image(_url, _cookie[10:])
+    img = load_image(_url, _cookie)
     preds = prediction_model.predict(img)
     pred_texts = decode_batch_predictions(preds)
     return pred_texts[0]
