@@ -72,7 +72,7 @@ def predict(img):
 
     return tflite_results    
 
-def main(_url, _cokie):
+def main(_url, _cookie):
     img = load_image(_url, _cookie)
     preds = predict(img)
     pred_texts = decode(preds)
