@@ -1,6 +1,6 @@
 import tflite
 import numpy as np
-from Pillow import Image
+from PTL import Image
 import requests
 from io import BytesIO
 
