@@ -3,5 +3,4 @@ gunicorn
 flask_cors
 tflite
 numpy
-Pillow
 requests
