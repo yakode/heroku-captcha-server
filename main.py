@@ -1,6 +1,7 @@
 # import tensorflow as tf
 # import tensorflow.keras.layers as layers
 # import tensorflow.keras as keras
+from concurrent.futures import ThreadPoolExecutor
 import tflite_runtime.interpreter as tflite
 import numpy as np
 from PIL import Image
@@ -42,17 +43,29 @@ def decode(preds):
 
     return ans
 
-def load_image(url, PHPSESSID):
-    response = requests.get(url, cookies={'PHPSESSID':PHPSESSID})
+def load_image(url_and_cookie):
+    url, cookie = url_and_cookie
+    response = requests.get(url, cookies={'PHPSESSID':cookie})
     img = Image.open(BytesIO(response.content)).convert('L')
     np_img = np.array(img)
-    np_img = np_img / 255.
+    np_img = (np_img / 255.).astype(np.float32)
     np_img = np.expand_dims(np_img, axis=-1)
     np_img = np_img.transpose(1, 0, 2)
     np_img = np.expand_dims(np_img, axis=0)
     return np_img
 
-def predict(img):
+def load_images(url, PHPSESSID):
+    url_and_cookie = [(url, PHPSESSID)] * 5
+    pool = ThreadPoolExecutor(max_workers=5)
+
+    images = []
+
+    for image in pool.map(load_image, url_and_cookie):
+        images.append(image)
+
+    return images
+        
+def predict(images):
     interpreter = tflite.Interpreter(model_path="./model.tflite")
     interpreter.allocate_tensors()
 
@@ -61,23 +74,75 @@ def predict(img):
     output_details = interpreter.get_output_details()
 
     #Structuring because TFlite doesn't do that
-    input_shape = input_details[0]['shape']
-    input_data = img.astype(np.float32)
-    interpreter.set_tensor(input_details[0]['index'], input_data)
+    tflite_results = []
+    for i in images:
+        interpreter.set_tensor(input_details[0]['index'], i)
 
-    interpreter.invoke()
+        interpreter.invoke()
 
-    tflite_results = interpreter.get_tensor(output_details[0]['index'])
+        tflite_result = interpreter.get_tensor(output_details[0]['index'])
+        tflite_results.append(decode(tflite_result))
 
     del interpreter
-
-    return tflite_results    
+    
+    return max(tflite_results,key=tflite_results.count) 
 
 def main(url, PHPSESSID):
-    img_ = load_image(url, PHPSESSID)
+    img_ = load_images(url, PHPSESSID)
     pred = predict(img_)
-    pred_text = decode(pred)
-    return pred_text
+    return pred
+# def decode(preds):
+#     np.argmax(preds, axis=2)
+#     p = np.argmax(preds, axis=2)
+#     to_num = ['?','4', '5', '0', '6', '3', '7', '9', '1', '8', '2']
+#     ans = ''
+#     for idx, i in enumerate(p[0]):
+#         if i == 11:
+#             continue
+#         # fix adjacent problem
+#         elif idx + 1 < len(p[0]) and i == p[0][idx + 1]:
+#                 continue
+#         else:
+#             ans += to_num[i]
+
+#     return ans
+
+# def load_image(url, PHPSESSID):
+#     response = requests.get(url, cookies={'PHPSESSID':PHPSESSID})
+#     img = Image.open(BytesIO(response.content)).convert('L')
+#     np_img = np.array(img)
+#     np_img = np_img / 255.
+#     np_img = np.expand_dims(np_img, axis=-1)
+#     np_img = np_img.transpose(1, 0, 2)
+#     np_img = np.expand_dims(np_img, axis=0)
+#     return np_img
+
+# def predict(img):
+#     interpreter = tflite.Interpreter(model_path="./model.tflite")
+#     interpreter.allocate_tensors()
+
+#     # Get input and output tensors
+#     input_details = interpreter.get_input_details()
+#     output_details = interpreter.get_output_details()
+
+#     #Structuring because TFlite doesn't do that
+#     input_shape = input_details[0]['shape']
+#     input_data = img.astype(np.float32)
+#     interpreter.set_tensor(input_details[0]['index'], input_data)
+
+#     interpreter.invoke()
+
+#     tflite_results = interpreter.get_tensor(output_details[0]['index'])
+
+#     del interpreter
+
+#     return tflite_results    
+
+# def main(url, PHPSESSID):
+#     img_ = load_image(url, PHPSESSID)
+#     pred = predict(img_)
+#     pred_text = decode(pred)
+#     return pred_text
 # results = [none] * 3
 # threads = [none] * 3
 # def laigao(url, PHPSESSID, result, index):
