@@ -1,4 +1,4 @@
-import tflit
+import tflite
 import numpy as np
 from Pillow import Image
 import requests
@@ -53,7 +53,7 @@ def load_image(url, PHPSESSID):
     return np_img
 
 def main(argv):
-    model = tflit.Model('./model.tflite')    
+    model = tflite.Model('./model.tflite')    
     img = load_image(argv[1], argv[2])
     preds = model.predict(img)
     pred_texts = decode(preds)
