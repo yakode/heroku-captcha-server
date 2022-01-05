@@ -73,28 +73,33 @@ def predict(img):
 
     return tflite_results    
 
-results = [none] * 3
-threads = [none] * 3
-def laigao(url, PHPSESSID, result, index):
+def main(url, PHPSESSID):
     img_ = load_image(url, PHPSESSID)
     pred = predict(img_)
     pred_text = decode(pred)
-    result[index] = pred_text
+    return pred_text
+# results = [none] * 3
+# threads = [none] * 3
+# def laigao(url, PHPSESSID, result, index):
+#     img_ = load_image(url, PHPSESSID)
+#     pred = predict(img_)
+#     pred_text = decode(pred)
+#     result[index] = pred_text
 
 
-def main(_url, _cookie):
-    for i in range(len(threads)):
-        threads[i] = Thread(target=laigao, args=(_url, _cookie, results, i))
-        threads[i].start()
-    for i in range(len(threads)):
-        threads[i].join()
+# def main(_url, _cookie):
+#     for i in range(len(threads)):
+#         threads[i] = Thread(target=laigao, args=(_url, _cookie, results, i))
+#         threads[i].start()
+#     for i in range(len(threads)):
+#         threads[i].join()
 
-    if results[0] == results[1]:
-        return results[0]
-    elif results[1] == results[2]:
-        return results[1]
-    else:
-        return results[0]
+#     if results[0] == results[1]:
+#         return results[0]
+#     elif results[1] == results[2]:
+#         return results[1]
+#     else:
+#         return results[0]
 
 # # A utility function to decode the output of the network
 # def decode_batch_predictions(pred):
