@@ -17,7 +17,7 @@ def captcha_pred():
     return jsonify({'result': result})
 
 @app.route("/test", methods=['POST'])
-def captcha_pred():
+def test():
     req = json.loads(request.data.decode('utf-8'))
     result = "1234"
     return jsonify({'result': result})
