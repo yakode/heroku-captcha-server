@@ -21,7 +21,7 @@ def captcha_pred():
 @app.route("/test", methods=['POST'])
 def test():
     req = json.loads(request.data.decode('utf-8'))
-    result = "1234"
+    result = req["cookie"]
     return jsonify({'result': result})
 
 # A utility function to decode the output of the network
