@@ -1,7 +1,7 @@
 Flask
 gunicorn
 flask_cors
-tflite
+tflit
 numpy
 Pillow
 requests
