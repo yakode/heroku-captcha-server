@@ -1,6 +1,6 @@
 import tflite
 import numpy as np
-from PTL import Image
+from PIL import Image
 import requests
 from io import BytesIO
 
