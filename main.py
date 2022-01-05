@@ -1,4 +1,6 @@
-import tflit
+import tensorflow as tf
+import tensorflow.keras.layers as layers
+import tensorflow.keras as keras
 import numpy as np
 from PIL import Image
 import requests
@@ -23,38 +25,39 @@ def test():
     return jsonify({'result': result})
 
 # A utility function to decode the output of the network
-def decode(pred):
+def decode_batch_predictions(pred):
     
-    # todo: fix further adjacent embedding predict the same number
-    # eg. p = [11, 1, 11, 1, 11, 2, 3, 4] => ans = '11234' instead of '1234'
-    p = np.argmax(pred, axis=2)
-    to_num = ['?','4', '5', '0', '6', '3', '7', '9', '1', '8', '2']
-    ans = ''
-    for idx, i in enumerate(p[0]):
-        if i == 11:
-            continue
-        # fix adjacent problem
-        elif idx + 1 < len(p):
-            if i == p[idx + 1]:
-                continue
-        else:
-            ans += to_num[i]
-
-    return ans
+    # Construct look table by list, because I forgot to store it
+    characters = ['[UNK]', '4', '5', '0', '6', '3', '7', '9', '1', '8', '2']
+    num_to_char = layers.StringLookup(
+        vocabulary=characters, mask_token=None, invert=True
+    )
+    
+    input_len = np.ones(pred.shape[0]) * pred.shape[1]
+    # Use greedy search. For complex tasks, you can use beam search
+    results = keras.backend.ctc_decode(pred, input_length=input_len, greedy=True)[0][0][
+        :, :4 # max length = 4
+    ]
+    # Iterate over the results and get back the text
+    output_text = []
+    for res in results:
+        res = tf.strings.reduce_join(num_to_char(res)).numpy().decode("utf-8")
+        output_text.append(res)
+    return output_text
 
 def load_image(url, PHPSESSID):
     response = requests.get(url, cookies={'PHPSESSID':PHPSESSID})
     img = Image.open(BytesIO(response.content)).convert('L')
-    np_img = np.array(img)
-    np_img = np_img / 255.
-    np_img = np.expand_dims(np_img, axis=-1)
-    np_img = np_img.transpose(1, 0, 2)
-    np_img = np.expand_dims(np_img, axis=0)
-    return np_img
+    img  = tf.keras.preprocessing.image.img_to_array(img)
+    img = tf.image.convert_image_dtype(img/255., tf.float32)
+    img = tf.image.resize(img, [80, 150])
+    img = tf.transpose(img, perm=[1, 0, 2])
+    img = tf.expand_dims(img, axis=0)
+    return img
 
 def main(_url, _cookie):
-    model = tflit.Model('./model.tflite')    
+    prediction_model = tf.keras.models.load_model('./prediction_model.h5', compile=False)
     img = load_image(_url, _cookie)
-    preds = model.predict(img)
-    pred_texts = decode(preds)
-    return pred_texts
+    preds = prediction_model.predict(img)
+    pred_texts = decode_batch_predictions(preds)
+    return pred_texts[0]
