@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 import requests
 from io import BytesIO
+import threading
 
 from flask import request, Flask,jsonify
 import json
@@ -72,22 +73,28 @@ def predict(img):
 
     return tflite_results    
 
+results = [none] * 3
+threads = [none] * 3
+def laigao(url, PHPSESSID, result, index):
+    img_ = load_image(url, PHPSESSID)
+    pred = predict(img_)
+    pred_text = decode(pred)
+    result[index] = pred_text
+
+
 def main(_url, _cookie):
-    img1 = load_image(_url, _cookie)
-    img2 = load_image(_url, _cookie)
-    img3 = load_image(_url, _cookie)
-    pred1 = predict(img1)
-    pred2 = predict(img2)
-    pred3 = predict(img3)
-    pred_text1 = decode(pred1)
-    pred_text2 = decode(pred2)
-    pred_text3 = decode(pred3)
-    if pred_text1 == pred_text2:
-        return pred_text1
-    elif pred_text2 == pred_text3:
-        return pred_text2
+    for i in range(len(threads)):
+        threads[i] = Thread(target=laigao, args=(_url, _cookie, results, i))
+        threads[i].start()
+    for i in range(len(threads)):
+        threads[i].join()
+
+    if results[0] == results[1]:
+        return results[0]
+    elif results[1] == results[2]:
+        return results[1]
     else:
-        return pred_text1
+        return results[0]
 
 # # A utility function to decode the output of the network
 # def decode_batch_predictions(pred):
