@@ -10,10 +10,16 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/test", methods=['POST'])
-def test():
+@app.route("/captcha_pred", methods=['POST'])
+def captcha_pred():
     req = json.loads(request.data.decode('utf-8'))
     result = main(req["url"], req["cookie"])
+    return jsonify({'result': result})
+
+@app.route("/test", methods=['POST'])
+def captcha_pred():
+    req = json.loads(request.data.decode('utf-8'))
+    result = "1234"
     return jsonify({'result': result})
 
 # A utility function to decode the output of the network
