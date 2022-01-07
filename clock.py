@@ -9,7 +9,7 @@ def scheduled_job_self():
     url = "https://eeclass-captcha.herokuapp.com/"
     conn = urllib.urlopen(url)
 
-@sched_other.scheduled_job('cron', hour='9', minute='25')
+@sched_other.scheduled_job('cron', hour='0-12', minute='*/2')
 def scheduled_job_other():
     url = "https://elearn-captcha.herokuapp.com/"
     conn = urllib.urlopen(url)
