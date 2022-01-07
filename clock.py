@@ -4,7 +4,7 @@ import time
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('cron', hour='0-12', minute='*/15')
+@sched.scheduled_job('cron', hour='0-11', minute='*/15')
 def scheduled_job():
     now = time.gmtime(time.time())
     if now.tm_hour == 11  and now.tm_min >= 45:
