@@ -15,8 +15,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/captcha_pred", methods=['POST'])
-def captcha_pred():
+@app.route("/captcha_predict", methods=['POST'])
+def captcha_predict():
     req = json.loads(request.data.decode('utf-8'))
     result = main(req["url"], req["cookie"])
     return jsonify({'result': result})

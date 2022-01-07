@@ -4,16 +4,16 @@ import time
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('cron', hour='0-12', minute='*/1')
+@sched.scheduled_job('cron', hour='0-12', minute='*/15')
 def scheduled_job():
     now = time.gmtime(time.time())
-    if now.tm_hour == 2:
-        if now.tm_min >= 50:
-            print("wake up the other app")
-            url = "https://elearn-captcha.herokuapp.com/"
-            conn = urllib.urlopen(url)
-
-    url = "https://eeclass-captcha.herokuapp.com/"
-    conn = urllib.urlopen(url)
+    if now.tm_hour == 11  and now.tm_min >= 45:
+        print("wake up the other app")
+        url = "https://elearn-captcha.herokuapp.com/"
+        conn = urllib.urlopen(url)
+    else:
+        print("wake up this app")
+        url = "https://eeclass-captcha.herokuapp.com/"
+        conn = urllib.urlopen(url)
 
 sched.start()
